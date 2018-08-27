@@ -77,4 +77,4 @@ ${TSRC} ${CSRC}:
 .PHONY: source clean dotest
 
 clean:
-	rm -rf ${CSRC} ${TSRC} ${LIBS} ${EXAMPLE} cgen *.class *.s
+	rm -rf ${CSRC} ${TSRC} ${LIBS} cgen *.class *.s
