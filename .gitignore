@@ -21,3 +21,28 @@
 
 # virtual machine crash logs, see http://www.java.com/en/download/help/error_hotspot.xml
 hs_err_pid*
+
+# COOL symbolic links
+ASTConstants.java
+ASTLexer.java
+AbstractSymbol.java
+AbstractTable.java
+Flags.java
+IdSymbol.java
+IdTable.java
+IntTable.java
+ListNode.java
+Cgen.java
+StringTable.java
+SymbolTable.java
+SymtabExample.java
+TokenConstants.java
+TreeNode.java
+Utilities.java
+mycoolc
+lexer
+parser
+semant
+
+# Assembly files
+*.s
