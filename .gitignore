@@ -39,6 +39,8 @@ SymtabExample.java
 TokenConstants.java
 TreeNode.java
 Utilities.java
+ClassTable.java
+
 mycoolc
 lexer
 parser

@@ -13,7 +13,13 @@ JFLAGS=-g -nowarn
 CLASSPATH := ${CLASSDIR}/lib:.:/usr/java/lib/rt.jar
 
 # files that students can modify
-SRC = CgenNode.java CgenSupport.java TreeConstants.java cool-tree.java IntSymbol.java StringSymbol.java BoolConst.java
+SRC = \
+	CgenNode.java \
+	TreeConstants.java \
+	cool-tree.java \
+	IntSymbol.java \
+	StringSymbol.java \
+	BoolConst.java
 
 # example COOL file
 EXAMPLE = example.cl
@@ -34,16 +40,17 @@ CSRC = \
 	SymbolTable.java \
 	SymtabExample.java \
 	TokenConstants.java \
+	ClassTable.java \
 	TreeNode.java \
 	Utilities.java
 
 TSRC = mycoolc
 LIBS = lexer parser semant
-CFIL = ${CSRC} ${CGEN} ${SRC}
-CLS = ${CFIL:.java=.class}
+CFILES = ${CSRC} ${CGEN} ${SRC} CgenClassTable.java CgenSupport.java
+CLS = ${CFILES:.java=.class}
 OUTPUT = example.output
 
-source: ${SRC} ${TSRC} ${LSRC} ${LIBS} ${CSRC} ${EXAMPLE}
+source: ${SRC} ${TSRC} ${LIBS} ${CSRC} ${EXAMPLE}
 
 cgen: Makefile ${CLS}
 	@rm -f cgen
@@ -66,6 +73,7 @@ ${CLS}: ${CFIL}
 # the assignment. They will not overwrite a file you already have.
 
 ${SRC} ${EXAMPLE}:
+	@echo ${SRC}
 	-${CLASSDIR}/etc/copy-skel ${ASSN} ${SRC} ${EXAMPLE}
 
 ${LIBS}:
