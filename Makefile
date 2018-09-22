@@ -52,7 +52,7 @@ OUTPUT = example.output
 
 source: ${SRC} ${TSRC} ${LIBS} ${CSRC} ${EXAMPLE}
 
-cgen: Makefile ${CLS}
+cgen: Makefile ${TSRC} ${LIBS} ${CSRC} ${CLS}
 	@rm -f cgen
 	echo '#!/bin/sh' >> cgen
 	echo 'java -classpath ${CLASSPATH} Cgen $$*' >> cgen
