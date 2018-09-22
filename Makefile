@@ -40,13 +40,13 @@ CSRC = \
 	SymbolTable.java \
 	SymtabExample.java \
 	TokenConstants.java \
-	ClassTable.java \
 	TreeNode.java \
 	Utilities.java
 
 TSRC = mycoolc
 LIBS = lexer parser semant
-CFILES = ${CSRC} ${CGEN} ${SRC} CgenClassTable.java CgenSupport.java
+EXTRA = ClassTable.java CgenClassTable.java CgenSupport.java
+CFILES = ${CSRC} ${CGEN} ${SRC} ${EXTRA}
 CLS = ${CFILES:.java=.class}
 OUTPUT = example.output
 
@@ -64,8 +64,8 @@ dotest: cgen example.cl
 
 ## cool-tree.class is not a real class file, but we need to have it
 ## for dependency tracking
-${CLS}: ${CFIL}
-	${JAVAC} ${JFLAGS} -classpath ${CLASSPATH} ${CFIL}
+${CLS}: ${CFILES}
+	${JAVAC} ${JFLAGS} -classpath ${CLASSPATH} ${CFILES}
 	touch cool-tree.class
 
 # SOURCE FILES
