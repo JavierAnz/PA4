@@ -40,6 +40,7 @@ TokenConstants.java
 TreeNode.java
 Utilities.java
 
+cgen
 mycoolc
 lexer
 parser
