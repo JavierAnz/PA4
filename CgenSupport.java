@@ -7,6 +7,16 @@ import java.io.PrintStream;
     this class is even created. */
 class CgenSupport {
 
+    /** Runtime constants for controlling the garbage collector. */
+    final static String[] gcInitNames = {
+        "_NoGC_Init", "_GenGC_Init", "_ScnGC_Init"
+    };
+
+    /** Runtime constants for controlling the garbage collector. */
+    final static String[] gcCollectNames = {
+        "_NoGC_Collect", "_GenGC_Collect", "_ScnGC_Collect"
+    };
+
     // Useful constants
     final static int MAXINT        = 100000000;
     final static int WORD_SIZE     = 4;
@@ -22,8 +32,7 @@ class CgenSupport {
 
     // Naming conventions
     final static String DISPTAB_SUFFIX      = "_dispTab";
-    // change '.' -> "__"
-    final static String METHOD_SEP          = "__";
+    final static String METHOD_SEP          = ".";
     final static String CLASSINIT_SUFFIX    = "_init";
     final static String PROTOBJ_SUFFIX      = "_protObj";
     final static String OBJECTPROTOBJ       = "Object" + PROTOBJ_SUFFIX;
@@ -52,7 +61,7 @@ class CgenSupport {
     final static String ZERO = "x0";     // Zero register
     final static String ACC  = "a0";     // Accumulator
     final static String A1   = "a1";     // For arguments to prim funcs
-    final static String SELF = "s0";     // Ptr to self (callee saves)
+    final static String SELF = "s1";     // Ptr to self (callee saves)
     final static String T1   = "t1";     // Temporary 1
     final static String T2   = "t2";     // Temporary 2
     final static String T3   = "t3";     // Temporary 3
@@ -63,7 +72,7 @@ class CgenSupport {
     // Opcodes
     final static String JALR    = "\tjalr\t";
     final static String JAL     = "\tjal\t";
-    final static String RET     = "\tret\t";
+    final static String RET     = "\tjr\t" + RA + "\t";
 
     final static String SW      = "\tsw\t";
     final static String LW      = "\tlw\t";
@@ -74,14 +83,12 @@ class CgenSupport {
     final static String NEG     = "\tneg\t";
     final static String ADD     = "\tadd\t";
     final static String ADDI    = "\taddi\t";
-    final static String ADDU    = "\tadd\t";
-    final static String ADDIU   = "\taddi\t";
     final static String DIV     = "\tdiv\t";
     final static String MUL     = "\tmul\t";
     final static String SUB     = "\tsub\t";
     final static String SLL     = "\tsll\t";
     final static String BEQZ    = "\tbeqz\t";
-    final static String BRANCH  = "\tj\t";
+    final static String JUMP    = "\tj\t";
     final static String BEQ     = "\tbeq\t";
     final static String BNE     = "\tbne\t";
     final static String BLEQ    = "\tble\t";
@@ -195,24 +202,14 @@ class CgenSupport {
         s.println(ADD + dest_reg + " " + src1 + " " + src2);
     }
 
-    /** Emits an ADDU instruction.
-     * @param dest_reg the destination register
-     * @param src1 the source register 1
-     * @param src2 the source register 2
-     * @param s the output stream
-     * */
-    static void emitAddu(String dest_reg, String src1, String src2, PrintStream s) {
-        s.println(ADDU + dest_reg + " " + src1 + " " + src2);
-    }
-
-    /** Emits an ADDIU instruction.
+    /** Emits an ADDI instruction.
      * @param dest_reg the destination register
      * @param src the source register
      * @param imm the immediate
      * @param s the output stream
      * */
-    static void emitAddiu(String dest_reg, String src, int imm, PrintStream s) {
-        s.println(ADDIU + dest_reg + " " + src + " " + imm);
+    static void emitAddi(String dest_reg, String src, int imm, PrintStream s) {
+        s.println(ADDI + dest_reg + " " + src + " " + imm);
     }
 
     /** Emits a DIV instruction.
@@ -418,12 +415,12 @@ class CgenSupport {
         s.println("");
     }
 
-    /** Emits a BRANCH instruction.
+    /** Emits a JUMP instruction.
      * @param label the label number
      * @param s the output stream
      * */
     static void emitBranch(int label, PrintStream s) {
-        s.print(BRANCH);
+        s.print(JUMP);
         emitLabelRef(label, s);
         s.println("");
     }
@@ -435,7 +432,7 @@ class CgenSupport {
      * */
     static void emitPush(String reg, PrintStream s) {
         emitStore(reg, 0, SP, s);
-        emitAddiu(SP, SP, -4, s);
+        emitAddi(SP, SP, -4, s);
     }
 
     /** Emits code to fetch the integer value of the Integer object.
@@ -454,6 +451,14 @@ class CgenSupport {
      * */
     static void emitStoreInt(String source, String dest, PrintStream s) {
         emitStore(source, DEFAULT_OBJFIELDS, dest, s);
+    }
+
+    /** Emits code to check the garbage collector
+     * @param s the output stream
+     * */
+    static void emitGCCheck(String source, PrintStream s) {
+        if (source != A1) emitMove(A1, source, s);
+            s.println(JAL + "_gc_check");
     }
 
     private static boolean ascii = false;
