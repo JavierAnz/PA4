@@ -7,16 +7,6 @@ import java.io.PrintStream;
     this class is even created. */
 class CgenSupport {
 
-    /** Runtime constants for controlling the garbage collector. */
-    final static String[] gcInitNames = {
-        "_NoGC_Init", "_GenGC_Init", "_ScnGC_Init"
-    };
-
-    /** Runtime constants for controlling the garbage collector. */
-    final static String[] gcCollectNames = {
-        "_NoGC_Collect", "_GenGC_Collect", "_ScnGC_Collect"
-    };
-
     // Useful constants
     final static int MAXINT        = 100000000;
     final static int WORD_SIZE     = 4;
@@ -61,12 +51,12 @@ class CgenSupport {
     final static String ZERO = "x0";     // Zero register
     final static String ACC  = "a0";     // Accumulator
     final static String A1   = "a1";     // For arguments to prim funcs
-    final static String SELF = "s1";     // Ptr to self (callee saves)
+    final static String SELF = "s0";     // Ptr to self (callee saves)
     final static String T1   = "t1";     // Temporary 1
     final static String T2   = "t2";     // Temporary 2
     final static String T3   = "t3";     // Temporary 3
     final static String SP   = "sp";     // Stack pointer
-    final static String FP   = "fp";     // Frame pointer
+    final static String FP   = "tp";     // Frame pointer
     final static String RA   = "ra";     // Return address
 
     // Opcodes
@@ -86,7 +76,7 @@ class CgenSupport {
     final static String DIV     = "\tdiv\t";
     final static String MUL     = "\tmul\t";
     final static String SUB     = "\tsub\t";
-    final static String SLL     = "\tsll\t";
+    final static String SLLI    = "\tslli\t";
     final static String BEQZ    = "\tbeqz\t";
     final static String JUMP    = "\tj\t";
     final static String BEQ     = "\tbeq\t";
@@ -248,8 +238,8 @@ class CgenSupport {
      * @param num the number of bits to shift
      * @param s the output stream
      * */
-    static void emitSll(String dest_reg, String src1, int num, PrintStream s) {
-        s.println(SLL + dest_reg + " " + src1 + " " + num);
+    static void emitSlli(String dest_reg, String src1, int num, PrintStream s) {
+        s.println(SLLI + dest_reg + " " + src1 + " " + num);
     }
 
     /** Emits a JALR instruction.
