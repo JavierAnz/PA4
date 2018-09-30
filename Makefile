@@ -19,8 +19,7 @@ SRC = \
 	cool-tree.java \
 	IntSymbol.java \
 	StringSymbol.java \
-	BoolConst.java \
-	CgenClassTable.java
+	BoolConst.java
 
 # example COOL file
 EXAMPLE = example.cl
@@ -46,7 +45,7 @@ CSRC = \
 
 TSRC = mycoolc
 LIBS = lexer parser semant
-EXTRA = ASTParser.java ClassTable.java CgenSupport.java
+EXTRA = ASTParser.java ClassTable.java CgenSupport.java CgenClassTable.java
 CFILES = ${CSRC} ${CGEN} ${SRC} ${EXTRA}
 CLS = ${CFILES:.java=.class}
 OUTPUT = example.output
