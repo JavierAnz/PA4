@@ -7,6 +7,9 @@ import java.io.PrintStream;
     this class is even created. */
 class CgenSupport {
 
+    // Newline
+    final static String NEWLINE = System.getProperty("line.separator");
+
     // Useful constants
     final static int MAXINT        = 100000000;
     final static int WORD_SIZE     = 4;
@@ -31,7 +34,7 @@ class CgenSupport {
     final static String BOOLCONST_PREFIX    = "bool_const";
 
     final static int    EMPTYSLOT           = 0;
-    final static String LABEL               = ":\n";
+    final static String LABEL               = ":" + NEWLINE;
 
     // information about object headers
     final static int DEFAULT_OBJFIELDS = 3;
@@ -43,9 +46,9 @@ class CgenSupport {
     final static int INT_SLOTS         = 1;
     final static int BOOL_SLOTS        = 1;
 
-    final static String GLOBAL       = "\t.globl\t";
-    final static String ALIGN        = "\t.align\t2\n";
-    final static String WORD         = "\t.word\t";
+    final static String GLOBAL       = "  .globl  ";
+    final static String ALIGN        = "  .align  2" + NEWLINE;
+    final static String WORD         = "  .word  ";
 
     // register names,
     final static String ZERO = "x0";     // Zero register
@@ -60,30 +63,30 @@ class CgenSupport {
     final static String RA   = "ra";     // Return address
 
     // Opcodes
-    final static String JALR    = "\tjalr\t";
-    final static String JAL     = "\tjal\t";
-    final static String RET     = "\tjr\t" + RA + "\t";
+    final static String JALR    = "  jalr  ";
+    final static String JAL     = "  jal   ";
+    final static String RET     = "  jr    " + RA + "  ";
 
-    final static String SW      = "\tsw\t";
-    final static String LW      = "\tlw\t";
-    final static String LI      = "\tli\t";
-    final static String LA      = "\tla\t";
+    final static String SW      = "  sw    ";
+    final static String LW      = "  lw    ";
+    final static String LI      = "  li    ";
+    final static String LA      = "  la    ";
 
-    final static String MOVE    = "\tmv\t";
-    final static String NEG     = "\tneg\t";
-    final static String ADD     = "\tadd\t";
-    final static String ADDI    = "\taddi\t";
-    final static String DIV     = "\tdiv\t";
-    final static String MUL     = "\tmul\t";
-    final static String SUB     = "\tsub\t";
-    final static String SLLI    = "\tslli\t";
-    final static String BEQZ    = "\tbeqz\t";
-    final static String JUMP    = "\tj\t";
-    final static String BEQ     = "\tbeq\t";
-    final static String BNE     = "\tbne\t";
-    final static String BLEQ    = "\tble\t";
-    final static String BLT     = "\tblt\t";
-    final static String BGT     = "\tbgt\t";
+    final static String MOVE    = "  mv    ";
+    final static String NEG     = "  neg   ";
+    final static String ADD     = "  add   ";
+    final static String ADDI    = "  addi  ";
+    final static String DIV     = "  div   ";
+    final static String MUL     = "  mul   ";
+    final static String SUB     = "  sub   ";
+    final static String SLLI    = "  slli  ";
+    final static String BEQZ    = "  beqz  ";
+    final static String JUMP    = "  j     ";
+    final static String BEQ     = "  beq   ";
+    final static String BNE     = "  bne   ";
+    final static String BLEQ    = "  ble   ";
+    final static String BLT     = "  blt   ";
+    final static String BGT     = "  bgt   ";
 
     /** Emits an LW instruction.
      * @param dest_reg the destination register
@@ -458,7 +461,7 @@ class CgenSupport {
      * */
     static void asciiMode(PrintStream s) {
         if (!ascii) {
-            s.print("\t.ascii\t\"");
+            s.print("  .ascii  \"");
             ascii = true;
         }
     }
@@ -492,7 +495,7 @@ class CgenSupport {
                     break;
                 case '\\':
                     byteMode(s);
-                    s.println("\t.byte\t" + (byte) '\\');
+                    s.println("  .byte  " + (byte) '\\');
                     break;
                 case '"':
                     asciiMode(s);
@@ -504,11 +507,11 @@ class CgenSupport {
                         s.print(c);
                     } else {
                         byteMode(s);
-                        s.println("\t.byte\t" + (byte) c);
+                        s.println("  .byte  " + (byte) c);
                     }
             }
         }
         byteMode(s);
-        s.println("\t.byte\t0\t");
+        s.println("  .byte  0  ");
     }
 }
