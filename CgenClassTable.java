@@ -101,8 +101,8 @@ class CgenClassTable extends SymbolTable {
               + CgenSupport.WORD + stringclasstag);
     }
 
-    /** Generates GC choice constants (pointers to GC functions) */
-    private void codeSelectGc() {
+    /** Generates memory manager code */
+    private void codeMemoryManager() {
         /*
             .globl  _MemMgr_TEST
             _MemMgr_TEST:
@@ -413,8 +413,8 @@ class CgenClassTable extends SymbolTable {
         if (Flags.cgen_debug) System.out.println("coding global data");
         codeGlobalData();
 
-        if (Flags.cgen_debug) System.out.println("choosing gc");
-        codeSelectGc();
+        if (Flags.cgen_debug) System.out.println("coding memory manager test");
+        codeMemoryManager();
 
         if (Flags.cgen_debug) System.out.println("coding constants");
         codeConstants();
