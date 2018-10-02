@@ -88,6 +88,37 @@ class CgenSupport {
     final static String BLT     = "  blt   ";
     final static String BGT     = "  bgt   ";
 
+    /**
+     * Emits the prologue of a method
+     * @param size how much increment sp (size is multiplied by WORD SIZE)
+     * @param s print stream
+     */
+    static void emitPrologue(int size, PrintStream s) {
+        int realSize = size * WORD_SIZE;
+        emitAddi(SP, SP, -realSize, s);
+        emitStore(FP, DEFAULT_OBJFIELDS, SP, s);
+        emitStore(SELF, DEFAULT_OBJFIELDS-1, SP, s);
+        emitStore(RA, DEFAULT_OBJFIELDS-2, SP, s);
+        emitAddi(FP, SP, 4, s);
+        emitMove(SELF, ACC, s);
+    }
+
+    /**
+     * Emits the epilogue of a method
+     * @param size how much decrement sp (size is multiplied by WORD SIZE)
+     * @param move move self object to acc
+     * @param s print stream
+     */
+    static void emitEpilogue(int size, boolean move, PrintStream s) {
+        int realSize = size * WORD_SIZE;
+        if(move) emitMove(ACC, SELF, s);
+        emitLoad(FP, DEFAULT_OBJFIELDS, SP, s);
+        emitLoad(SELF, DEFAULT_OBJFIELDS-1, SP, s);
+        emitLoad(RA, DEFAULT_OBJFIELDS-2, SP, s);
+        emitAddi(SP, SP, realSize, s);
+        emitReturn(s);
+    }
+
     /** Emits an LW instruction.
      * @param dest_reg the destination register
      * @param offset the word offset from source register
@@ -268,13 +299,6 @@ class CgenSupport {
         s.println(RET);
     }
 
-    /** Emits a call to gc_assign.
-     * @param s the output stream
-     * */
-    static void emitGCAssign(PrintStream s) {
-        s.println(JAL + "_GenGC_Assign");
-    }
-
     /** Emits a reference to dispatch table.
      * @param sym the name of the class
      * @param s the output stream
@@ -444,14 +468,6 @@ class CgenSupport {
      * */
     static void emitStoreInt(String source, String dest, PrintStream s) {
         emitStore(source, DEFAULT_OBJFIELDS, dest, s);
-    }
-
-    /** Emits code to check the garbage collector
-     * @param s the output stream
-     * */
-    static void emitGCCheck(String source, PrintStream s) {
-        if (source != A1) emitMove(A1, source, s);
-            s.println(JAL + "_gc_check");
     }
 
     private static boolean ascii = false;
