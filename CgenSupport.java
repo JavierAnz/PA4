@@ -55,6 +55,7 @@ class CgenSupport {
     final static String ACC  = "a0";     // Accumulator
     final static String A1   = "a1";     // For arguments to prim funcs
     final static String SELF = "s0";     // Ptr to self (callee saves)
+    final static String S1   = "s1";     // save things
     final static String T1   = "t1";     // Temporary 1
     final static String T2   = "t2";     // Temporary 2
     final static String T3   = "t3";     // Temporary 3
@@ -415,7 +416,8 @@ class CgenSupport {
      * @param s the output stream
      * */
     static void emitBlti(String src, int imm, int label, PrintStream s) {
-        s.print(BLT + src + " " + imm + " ");
+        emitLoadImm(T3, imm, s);
+        s.print(BLT + src + " " + T3 + " ");
         emitLabelRef(label, s);
         s.println("");
     }
@@ -427,7 +429,8 @@ class CgenSupport {
      * @param s the output stream
      * */
     static void emitBgti(String src, int imm, int label, PrintStream s) {
-        s.print(BGT + src + " " + imm + " ");
+        emitLoadImm(T3, imm, s);
+        s.print(BGT + src + " " + T3 + " ");
         emitLabelRef(label, s);
         s.println("");
     }
