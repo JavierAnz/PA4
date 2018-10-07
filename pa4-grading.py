@@ -22,7 +22,7 @@ def start():
 
 # gets terminal cols dim
 def cols():
-    rows, columns = os.popen('stty size', 'r').read().split()
+    _, columns = os.popen('stty size', 'r').read().split()
     return int(columns)
 
 
@@ -38,7 +38,7 @@ def create(name, data):
 def execute(name):
     test = os.path.join('grading', name + '.cl')
     testout = os.path.join('grading', '.tmp.s')
-    os.system('./mycoolc -o ' + testout + ' ' + test)
+    os.system('./mycoolc -o ' + testout + ' ' + test + ' 2>> grading/.tmp')
     os.system('vsim -nocolor -notitle ' + testout + ' >> grading/.tmp 2>&1')
     testout = open('grading/.tmp', 'r')
     testresult = testout.read().strip()
@@ -76,6 +76,7 @@ def main():
     print('')
     os.system('make cgen > /dev/null 2>&1')
     grade = 0
+    gc = []
     for sample in data:
         # unpack test data
         input, output, result, points, name, desc = sample
@@ -97,14 +98,21 @@ def main():
             print(info)
         else:
             grade += points
+            if name in ['lam-gc', 'simple-gc']:
+                gc.append(name)
         # clear output
         clear()
-    # chek score
-    if grade == SCORE:
-        t1 = colored('\n[GC Test Case: lam-gc.cl ', 'white')
+    # chek "garbage colllector" tests
+    first = False
+    if 'simple-gc' in gc:
+        t1 = colored('\n[GC Test Case: simple-gc.cl ', 'white')
         t1 += colored('OK', 'green') + colored(']', 'white')
         print(t1)
-        t1 = colored('[GC Test Case: simple-gc.cl ', 'white')
+        first = True
+    if 'lam-gc' in gc:
+        if not first:
+            print('')
+        t1 = colored('[GC Test Case: lam-gc.cl ', 'white')
         t1 += colored('OK', 'green') + colored(']', 'white')
         print(t1)
     print('\n')
