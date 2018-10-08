@@ -62,7 +62,7 @@ class CgenClassTable extends SymbolTable {
             .globl  _bool_tag
             .globl  _string_tag
         */
-        str.print("\t.data\n" + CgenSupport.ALIGN);
+        str.print("  .data\n" + CgenSupport.ALIGN);
         str.println(CgenSupport.GLOBAL + CgenSupport.CLASSNAMETAB);
         str.print(CgenSupport.GLOBAL);
         CgenSupport.emitProtObjRef(TreeConstants.Main, str);
