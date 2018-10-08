@@ -48,7 +48,7 @@ class CgenSupport {
 
     final static String GLOBAL       = "  .globl  ";
     final static String ALIGN        = "  .align  2" + NEWLINE;
-    final static String WORD         = "  .word  ";
+    final static String WORD         = "  .word   ";
 
     // register names,
     final static String ZERO = "x0";     // Zero register
