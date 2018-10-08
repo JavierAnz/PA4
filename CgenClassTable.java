@@ -131,7 +131,7 @@ class CgenClassTable extends SymbolTable {
         str.println(CgenSupport.GLOBAL + CgenSupport.HEAP_START);
         str.print(CgenSupport.HEAP_START + CgenSupport.LABEL);
         str.println(CgenSupport.WORD + 0);
-        str.println("\t.text");
+        str.println("  .text");
         str.print(CgenSupport.GLOBAL);
         CgenSupport.emitInitRef(TreeConstants.Main, str);
         str.println("");
