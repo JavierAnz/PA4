@@ -20,12 +20,6 @@ def start():
     os.system('mkdir ' + os.path.join('grading', 'test-output'))
 
 
-# gets terminal cols dim
-def cols():
-    _, columns = os.popen('stty size', 'r').read().split()
-    return int(columns)
-
-
 # creates an output file
 def create(name, data):
     if not os.path.exists(os.path.join('grading', name)):
@@ -39,16 +33,23 @@ def execute(name):
     test = os.path.join('grading', name + '.cl')
     testout = os.path.join('grading', '.tmp.s')
     os.system('./mycoolc -o ' + testout + ' ' + test + ' 2>> grading/.tmp')
-    os.system('vsim -nocolor -notitle ' + testout + ' >> grading/.tmp 2>&1')
+    os.system('jupiter ' + testout + ' >> grading/.tmp 2>&1')
     testout = open('grading/.tmp', 'r')
     testresult = testout.read().strip()
+    testresult = testresult.replace('Increasing heap...', '')
+    testresult = testresult.split('\n')
+    testresult = testresult[:-2]
+    testresult = list(filter(lambda x: len(x) > 0, testresult))
+    testresult = '\n'.join(testresult).strip()
     testout.close()
     return testresult
 
 
 # copy result
-def copy(name):
-    os.system('cp grading/.tmp grading/test-output/' + name + '.cl.out')
+def copy(name, data):
+    f = open('grading/test-output/' + name + '.cl.out', 'w')
+    f.write(data)
+    f.close()
 
 
 # calls diff
@@ -71,7 +72,7 @@ def main():
     f.close()
     start()
     print('')
-    cprint('Autograder'.center(cols(), ' '), color='blue')
+    cprint('                          Autograder', color='blue')
     print('')
     print('')
     os.system('make cgen > /dev/null 2>&1')
@@ -90,7 +91,7 @@ def main():
         uresult = execute(name)
         # compare
         if uresult != result:
-            copy(name)
+            copy(name, uresult)
             diff(name)
             info = colored('-%d' % points, 'red')
             info += colored('(%s)' % name, 'cyan').center(37, ' ')
@@ -100,6 +101,10 @@ def main():
             grade += points
             if name in ['lam-gc', 'simple-gc']:
                 gc.append(name)
+            info = colored('+%d' % points, 'green')
+            info += colored('(%s)' % name, 'cyan').center(37, ' ')
+            info += colored(' %s' % desc, 'white')
+            print(info)
         # clear output
         clear()
     # chek "garbage colllector" tests
