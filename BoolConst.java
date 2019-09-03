@@ -61,8 +61,6 @@ class BoolConst {
      *
      * */
     public void codeDef(int boolclasstag, PrintStream s) {
-        // Add -1 eye catcher
-        s.println(CgenSupport.WORD + "-1");
         codeRef(s); s.print(CgenSupport.LABEL); // label
         s.println(CgenSupport.WORD + boolclasstag); // tag
         s.println(CgenSupport.WORD + (CgenSupport.DEFAULT_OBJFIELDS + CgenSupport.BOOL_SLOTS)); // size

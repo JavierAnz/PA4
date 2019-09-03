@@ -41,8 +41,6 @@ class StringSymbol extends AbstractSymbol {
      * */
     public void codeDef(int stringclasstag, PrintStream s) {
         IntSymbol lensym = (IntSymbol)AbstractTable.inttable.addInt(str.length());
-        // Add -1 eye catcher
-        s.println(CgenSupport.WORD + "-1");
         codeRef(s); s.print(CgenSupport.LABEL); // label
         s.println(CgenSupport.WORD + stringclasstag); // tag
         s.println(CgenSupport.WORD + (CgenSupport.DEFAULT_OBJFIELDS + CgenSupport.STRING_SLOTS + (str.length() + 4) / 4)); // object size
