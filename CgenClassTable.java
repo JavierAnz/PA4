@@ -101,24 +101,12 @@ class CgenClassTable extends SymbolTable {
               + CgenSupport.WORD + stringclasstag);
     }
 
-    /** Generates memory manager code */
-    private void codeMemoryManager() {
-        /*
-            .globl  _MemMgr_TEST
-            _MemMgr_TEST:
-            .word  0/1
-        */
-        str.println(CgenSupport.GLOBAL + "_MemMgr_TEST");
-        str.println("_MemMgr_TEST:");
-        str.println(CgenSupport.WORD + ((Flags.cgen_Memmgr_Test == Flags.GC_TEST) ? "1" : "0"));
-    }
-
     /** Emits code to start the .text segment and to
      * declare the global names.
      * */
     private void codeGlobalText() {
-        /*  .
-            globl  heap_start
+        /*
+            .globl  heap_start
             heap_start:
                 .word  0
                 .text
@@ -412,9 +400,6 @@ class CgenClassTable extends SymbolTable {
     public void code() {
         if (Flags.cgen_debug) System.out.println("coding global data");
         codeGlobalData();
-
-        if (Flags.cgen_debug) System.out.println("coding memory manager test");
-        codeMemoryManager();
 
         if (Flags.cgen_debug) System.out.println("coding constants");
         codeConstants();
