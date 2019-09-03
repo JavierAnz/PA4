@@ -531,6 +531,6 @@ class CgenSupport {
             }
         }
         byteMode(s);
-        s.println("  .byte  0  ");
+        s.println("  .byte  0");
     }
 }
