@@ -31,7 +31,7 @@ import java.util.Enumeration;
 class CgenClassTable extends SymbolTable {
 
     /** All classes in the program, represented as CgenNode */
-    private Vector nds;
+    private Vector<CgenNode> nds;
 
     /** This is the stream to which assembly instructions are output */
     private PrintStream str;
@@ -99,6 +99,18 @@ class CgenClassTable extends SymbolTable {
               + CgenSupport.WORD + boolclasstag);
         str.println(CgenSupport.STRINGTAG + CgenSupport.LABEL
               + CgenSupport.WORD + stringclasstag);
+    }
+
+    /** Generates memory manager code */
+    private void codeMemoryManager() {
+        /*
+            .globl  _MemMgr_TEST
+            _MemMgr_TEST:
+            .word  0/1
+        */
+        str.println(CgenSupport.GLOBAL + "_MemMgr_TEST");
+        str.println("_MemMgr_TEST:");
+        str.println(CgenSupport.WORD + ((Flags.cgen_Memmgr_Test == Flags.GC_TEST) ? "1" : "0"));
     }
 
     /** Emits code to start the .text segment and to
@@ -400,6 +412,9 @@ class CgenClassTable extends SymbolTable {
     public void code() {
         if (Flags.cgen_debug) System.out.println("coding global data");
         codeGlobalData();
+
+        if (Flags.cgen_debug) System.out.println("coding memory manager");
+        codeMemoryManager();
 
         if (Flags.cgen_debug) System.out.println("coding constants");
         codeConstants();
