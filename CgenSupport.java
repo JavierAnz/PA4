@@ -66,7 +66,7 @@ class CgenSupport {
     // Opcodes
     final static String JALR    = "  jalr  ";
     final static String JAL     = "  jal   ";
-    final static String RET     = "  jr    " + RA + "  ";
+    final static String RET     = "  ret   ";
 
     final static String SW      = "  sw    ";
     final static String LW      = "  lw    ";
