@@ -122,6 +122,10 @@ def main():
         print(t1)
     print('\n')
     cprint('=> You got a score of %d out of 63.' % grade, color='yellow')
+    # save score
+    f = open('grading/SCORE', 'w')
+    f.write('%d' % grade)
+    f.close()
 
 
 if __name__ == '__main__':
