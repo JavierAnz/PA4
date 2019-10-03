@@ -1,2 +1,3 @@
-# RV-PA5J
-RISC-V PA5J COOL Project Assignment
+# COOL PA4 (CodeGen)
+
+RISC-V PA4J (CodeGen) COOL Project Assignment
