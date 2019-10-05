@@ -8,20 +8,20 @@ import java.io.PrintStream;
 class CgenSupport {
 
     // Newline
-    final static String NEWLINE = System.getProperty("line.separator");
+    final static String NEWLINE             = System.getProperty("line.separator");
 
     // Useful constants
-    final static int MAXINT        = 100000000;
-    final static int WORD_SIZE     = 4;
-    final static int LOG_WORD_SIZE = 2;     // for logical shifts
+    final static int MAXINT                 = 100000000;
+    final static int WORD_SIZE              = 4;
+    final static int LOG_WORD_SIZE          = 2;     // for logical shifts
 
     // Global names
-    final static String CLASSNAMETAB = "class_nameTab";
-    final static String CLASSOBJTAB  = "class_objTab";
-    final static String INTTAG       = "_int_tag";
-    final static String BOOLTAG      = "_bool_tag";
-    final static String STRINGTAG    = "_string_tag";
-    final static String HEAP_START   = "heap_start";
+    final static String CLASSNAMETAB        = "class_nameTab";
+    final static String CLASSOBJTAB         = "class_objTab";
+    final static String INTTAG              = "_int_tag";
+    final static String BOOLTAG             = "_bool_tag";
+    final static String STRINGTAG           = "_string_tag";
+    final static String HEAP_START          = "heap_start";
 
     // Naming conventions
     final static String DISPTAB_SUFFIX      = "_dispTab";
@@ -37,57 +37,57 @@ class CgenSupport {
     final static String LABEL               = ":" + NEWLINE;
 
     // information about object headers
-    final static int DEFAULT_OBJFIELDS = 3;
-    final static int TAG_OFFSET        = 0;
-    final static int SIZE_OFFSET       = 1;
-    final static int DISPTABLE_OFFSET  = 2;
+    final static int DEFAULT_OBJFIELDS      = 3;
+    final static int TAG_OFFSET             = 0;
+    final static int SIZE_OFFSET            = 1;
+    final static int DISPTABLE_OFFSET       = 2;
 
-    final static int STRING_SLOTS      = 1;
-    final static int INT_SLOTS         = 1;
-    final static int BOOL_SLOTS        = 1;
+    final static int STRING_SLOTS           = 1;
+    final static int INT_SLOTS              = 1;
+    final static int BOOL_SLOTS             = 1;
 
-    final static String GLOBAL       = "  .globl  ";
-    final static String ALIGN        = "  .align  2" + NEWLINE;
-    final static String WORD         = "  .word   ";
+    final static String GLOBAL              = "  .globl  ";
+    final static String ALIGN               = "  .align  2" + NEWLINE;
+    final static String WORD                = "  .word   ";
 
     // register names,
-    final static String ZERO = "x0";     // Zero register
-    final static String ACC  = "a0";     // Accumulator
-    final static String A1   = "a1";     // For arguments to prim funcs
-    final static String SELF = "s0";     // Ptr to self (callee saves)
-    final static String S1   = "s1";     // save things
-    final static String T1   = "t1";     // Temporary 1
-    final static String T2   = "t2";     // Temporary 2
-    final static String T3   = "t3";     // Temporary 3
-    final static String SP   = "sp";     // Stack pointer
-    final static String FP   = "tp";     // Frame pointer
-    final static String RA   = "ra";     // Return address
+    final static String ZERO                = "x0";     // Zero register
+    final static String ACC                 = "a0";     // Accumulator
+    final static String A1                  = "a1";     // For arguments to prim funcs
+    final static String SELF                = "s0";     // Ptr to self (callee saves)
+    final static String S1                  = "s1";     // save things
+    final static String T1                  = "t1";     // Temporary 1
+    final static String T2                  = "t2";     // Temporary 2
+    final static String T3                  = "t3";     // Temporary 3
+    final static String SP                  = "sp";     // Stack pointer
+    final static String FP                  = "tp";     // Frame pointer
+    final static String RA                  = "ra";     // Return address
 
     // Opcodes
-    final static String JALR    = "  jalr  ";
-    final static String JAL     = "  jal   ";
-    final static String RET     = "  ret   ";
+    final static String JALR                = "  jalr  ";
+    final static String JAL                 = "  jal   ";
+    final static String RET                 = "  ret   ";
 
-    final static String SW      = "  sw    ";
-    final static String LW      = "  lw    ";
-    final static String LI      = "  li    ";
-    final static String LA      = "  la    ";
+    final static String SW                  = "  sw    ";
+    final static String LW                  = "  lw    ";
+    final static String LI                  = "  li    ";
+    final static String LA                  = "  la    ";
 
-    final static String MOVE    = "  mv    ";
-    final static String NEG     = "  neg   ";
-    final static String ADD     = "  add   ";
-    final static String ADDI    = "  addi  ";
-    final static String DIV     = "  div   ";
-    final static String MUL     = "  mul   ";
-    final static String SUB     = "  sub   ";
-    final static String SLLI    = "  slli  ";
-    final static String BEQZ    = "  beqz  ";
-    final static String JUMP    = "  j     ";
-    final static String BEQ     = "  beq   ";
-    final static String BNE     = "  bne   ";
-    final static String BLEQ    = "  ble   ";
-    final static String BLT     = "  blt   ";
-    final static String BGT     = "  bgt   ";
+    final static String MOVE                = "  mv    ";
+    final static String NEG                 = "  neg   ";
+    final static String ADD                 = "  add   ";
+    final static String ADDI                = "  addi  ";
+    final static String DIV                 = "  div   ";
+    final static String MUL                 = "  mul   ";
+    final static String SUB                 = "  sub   ";
+    final static String SLLI                = "  slli  ";
+    final static String BEQZ                = "  beqz  ";
+    final static String JUMP                = "  j     ";
+    final static String BEQ                 = "  beq   ";
+    final static String BNE                 = "  bne   ";
+    final static String BLEQ                = "  ble   ";
+    final static String BLT                 = "  blt   ";
+    final static String BGT                 = "  bgt   ";
 
     /**
      * Emits the prologue of a method
