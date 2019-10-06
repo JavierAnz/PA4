@@ -33,7 +33,7 @@ def execute(name):
     test = os.path.join('grading', name + '.cl')
     testout = os.path.join('grading', '.tmp.s')
     os.system('./mycoolc -o ' + testout + ' ' + test + ' 2>> grading/.tmp')
-    os.system('jupiter-cool ' + testout + ' >> grading/.tmp 2>&1')
+    os.system('jupitercl ' + testout + ' >> grading/.tmp 2>&1')
     testout = open('grading/.tmp', 'r')
     testresult = testout.read().strip()
     testresult = testresult.replace('Increasing heap...', '')
