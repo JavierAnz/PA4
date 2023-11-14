@@ -23,7 +23,11 @@ PROVIDE MAINTENANCE, SUPPORT, UPDATES, ENHANCEMENTS, OR MODIFICATIONS.
 
 import java.io.PrintStream;
 import java.util.Vector;
+/**
+ * This file imports the necessary Enumeration class from the java.util package.
+ */
 import java.util.Enumeration;
+import java.util.LinkedList;
 
 /** This class is used for representing the inheritance tree during code
     generation. You will need to fill in some of its methods and
@@ -391,9 +395,9 @@ class CgenClassTable extends SymbolTable {
 
         this.str = str;
 
-        stringclasstag = 0 /* Change to your String class tag here */;
-        intclasstag =    0 /* Change to your Int class tag here */;
-        boolclasstag =   0 /* Change to your Bool class tag here */;
+        stringclasstag = 4 /* Change to your String class tag here */;
+        intclasstag =    2 /* Change to your Int class tag here */;
+        boolclasstag =   3 /* Change to your Bool class tag here */;
 
         enterScope();
         if (Flags.cgen_debug) System.out.println("Building CgenClassTable");
@@ -402,14 +406,13 @@ class CgenClassTable extends SymbolTable {
         installClasses(cls);
         buildInheritanceTree();
 
-        code();
+        code(cls, str);
 
         exitScope();
     }
 
-    /** This method is the meat of the code generator.  It is to be
-        filled in programming assignment 5 */
-    public void code() {
+    
+    public void code(Classes cls, PrintStream str) {
         if (Flags.cgen_debug) System.out.println("coding global data");
         codeGlobalData();
 
@@ -418,6 +421,240 @@ class CgenClassTable extends SymbolTable {
 
         if (Flags.cgen_debug) System.out.println("coding constants");
         codeConstants();
+       
+        str.print(CgenSupport.CLASSNAMETAB.concat(CgenSupport.LABEL));
+        LinkedList <AbstractSymbol> classes = new LinkedList <AbstractSymbol> ();
+        classes.add(TreeConstants.Object_);
+        classes.add(TreeConstants.IO);
+        classes.add(TreeConstants.Int);
+        classes.add(TreeConstants.Bool);
+        classes.add(TreeConstants.Str);
+        for (Enumeration e = cls.getElements(); e.hasMoreElements(); ) {
+            class_ curClass = (class_) e.nextElement();
+            classes.add(curClass.getName());
+        }
+
+        for( int i = 0; i < classes.size(); i++){
+            str.print(CgenSupport.WORD);
+            ((StringSymbol)AbstractTable.stringtable.lookup(classes.get(i).toString())).codeRef(str);
+            str.print(CgenSupport.NEWLINE);
+        }
+
+        //Object
+        str.print(CgenSupport.CLASSOBJTAB.concat(CgenSupport.LABEL));
+        
+        for( int i = 0 ; i < classes.size(); i++){
+            str.print(CgenSupport.WORD);
+            str.print(classes.get(i).toString().concat(CgenSupport.PROTOBJ_SUFFIX));
+            str.print(CgenSupport.NEWLINE);
+            str.print(CgenSupport.WORD);
+            str.print(classes.get(i).toString().concat(CgenSupport.CLASSINIT_SUFFIX));
+            str.print(CgenSupport.NEWLINE);
+        }
+
+        str.print("Object".concat(CgenSupport.DISPTAB_SUFFIX).concat(CgenSupport.LABEL));
+        LinkedList <AbstractSymbol> objectDispTab = new LinkedList <AbstractSymbol> ();
+        objectDispTab.add(TreeConstants.cool_abort);
+        objectDispTab.add(TreeConstants.type_name);
+        objectDispTab.add(TreeConstants.copy);
+        for( int i = 0 ; i < objectDispTab.size(); i++){
+            str.print(CgenSupport.WORD);
+            str.print("Object".concat(CgenSupport.METHOD_SEP).concat(objectDispTab.get(i).toString()));
+            str.print(CgenSupport.NEWLINE);
+        }
+        //IO
+        str.print("IO".concat(CgenSupport.DISPTAB_SUFFIX).concat(CgenSupport.LABEL));
+        LinkedList <AbstractSymbol> ioDispTab = new LinkedList <AbstractSymbol> ();
+        
+
+        for( int i = 0 ; i < objectDispTab.size(); i++){
+            ioDispTab.add(objectDispTab.get(i));
+            str.print(CgenSupport.WORD);
+            str.print("Object".concat(CgenSupport.METHOD_SEP).concat(ioDispTab.get(i).toString()));
+            str.print(CgenSupport.NEWLINE);
+            
+        }
+
+        ioDispTab.add(TreeConstants.out_string);
+        ioDispTab.add(TreeConstants.out_int);
+        ioDispTab.add(TreeConstants.in_string);
+        ioDispTab.add(TreeConstants.in_int);
+
+        for(int i = objectDispTab.size() ; i < ioDispTab.size() ; i++){
+            str.print(CgenSupport.WORD);
+            str.print("IO".concat(CgenSupport.METHOD_SEP).concat(ioDispTab.get(i).toString()));
+            str.print(CgenSupport.NEWLINE);
+        }
+        //Int
+        str.print("Int".concat(CgenSupport.DISPTAB_SUFFIX).concat(CgenSupport.LABEL));
+        LinkedList <AbstractSymbol> intDispTab = new LinkedList <AbstractSymbol> ();
+        intDispTab.add(TreeConstants.cool_abort);
+        intDispTab.add(TreeConstants.type_name);
+        intDispTab.add(TreeConstants.copy);
+
+        for( int i = 0 ; i < objectDispTab.size(); i++){
+            intDispTab.add(objectDispTab.get(i));
+            str.print(CgenSupport.WORD);
+            str.print("Object".concat(CgenSupport.METHOD_SEP).concat(intDispTab.get(i).toString()));
+            str.print(CgenSupport.NEWLINE);
+            
+        }
+        //Bool
+        str.print("Bool".concat(CgenSupport.DISPTAB_SUFFIX).concat(CgenSupport.LABEL));
+        LinkedList <AbstractSymbol> boolDispTab = new LinkedList <AbstractSymbol> ();
+        for( int i = 0 ; i < objectDispTab.size(); i++){
+            boolDispTab.add(objectDispTab.get(i));
+            str.print(CgenSupport.WORD);
+            str.print("Object".concat(CgenSupport.METHOD_SEP).concat(boolDispTab.get(i).toString()));
+            str.print(CgenSupport.NEWLINE);
+        }
+
+        //String
+        str.print("String".concat(CgenSupport.DISPTAB_SUFFIX).concat(CgenSupport.LABEL));
+        LinkedList <AbstractSymbol> stringDispTab = new LinkedList <AbstractSymbol> ();
+
+        for(int i = 0 ; i < objectDispTab.size(); i++){
+            stringDispTab.add(objectDispTab.get(i));
+            str.print(CgenSupport.WORD);
+            str.print("Object".concat(CgenSupport.METHOD_SEP).concat(stringDispTab.get(i).toString()));
+            str.print(CgenSupport.NEWLINE);
+            
+        }
+
+        stringDispTab.add(TreeConstants.length);
+        stringDispTab.add(TreeConstants.concat);
+        stringDispTab.add(TreeConstants.substr);
+        for( int i = objectDispTab.size(); i < stringDispTab.size(); i++){
+
+            str.print(CgenSupport.WORD);
+            str.print("String".concat(CgenSupport.METHOD_SEP).concat(stringDispTab.get(i).toString()));
+            str.print(CgenSupport.NEWLINE);
+        }
+        for( int i = 5; i< classes.size(); i++){
+            class_ curClass = (class_) lookup(classes.get(i));
+            /*CgenSupport.emitProtObjRef(curClass.getName(), str);
+            str.print(CgenSupport.LABEL);
+            str.print(CgenSupport.WORD);
+            str.print(CgenSupport.NEWLINE);
+            int valConst = 3;
+            for (Enumeration e = curClass.features.getElements(); e.hasMoreElements(); ) {
+                Feature currFeature = (Feature) e.nextElement();
+                if(currFeature instanceof attr){
+                    valConst++;
+                }
+            }
+            str.print(CgenSupport.WORD + valConst);
+            str.print(CgenSupport.NEWLINE);
+            str.print(CgenSupport.WORD);*/
+            CgenSupport.emitDispTableRef(curClass.getName(), str);
+            str.print(CgenSupport.LABEL);
+            
+            for(int p = 0 ; p < objectDispTab.size(); p++){
+                stringDispTab.add(objectDispTab.get(p));
+                str.print(CgenSupport.WORD);
+                str.print("Object".concat(CgenSupport.METHOD_SEP).concat(stringDispTab.get(p).toString()));
+                str.print(CgenSupport.NEWLINE);
+            
+            }
+            for (Enumeration e = curClass.features.getElements(); e.hasMoreElements(); ) {
+                Feature currFeature = (Feature) e.nextElement();
+                if(currFeature instanceof method){
+                    method currMethod = (method) currFeature;
+                    str.print(CgenSupport.WORD);
+                    CgenSupport.emitMethodRef(curClass.getName(), currMethod.name, str);
+                    str.print(CgenSupport.NEWLINE);
+                }
+
+            }
+            
+        }
+
+        //PROTOBJ ----------------------------------------------------------
+        for( int i=0; i< classes.size(); i++){
+            class_ curClass = (class_) lookup(classes.get(i));
+            CgenSupport.emitProtObjRef(curClass.getName(), str);
+            str.print(CgenSupport.LABEL);
+            str.print(CgenSupport.WORD + i);
+            str.print(CgenSupport.NEWLINE);
+            int valOff = 3;
+            for (Enumeration e = curClass.features.getElements(); e.hasMoreElements(); ) {
+                Feature currFeature = (Feature) e.nextElement();
+                if(currFeature instanceof attr) {
+                    valOff++;
+                }
+            }
+            str.print(CgenSupport.WORD + valOff);
+            str.print(CgenSupport.NEWLINE);
+            str.print(CgenSupport.WORD);
+            CgenSupport.emitDispTableRef(curClass.getName(), str);
+            str.print(CgenSupport.NEWLINE);
+
+            for (Enumeration f = curClass.getFeatures().getElements(); f.hasMoreElements();) {
+                Object currFeature = f.nextElement();
+                
+                if (currFeature instanceof attr){
+                    attr currAttr = (attr) currFeature;
+                    str.print(CgenSupport.WORD);
+
+                    if (currAttr.type_decl.equals(TreeConstants.Str)) {
+                        ((StringSymbol) AbstractTable.stringtable.lookup("")).codeRef(str);
+                    } else if (currAttr.type_decl.equals(TreeConstants.Int)) {
+                        ((IntSymbol) AbstractTable.inttable.lookup("0")).codeRef(str);
+                    } else if (currAttr.type_decl.equals(TreeConstants.Bool)) {
+                        str.print(CgenSupport.BOOLCONST_PREFIX + CgenSupport.EMPTYSLOT);
+                    } else {
+                        str.print(CgenSupport.EMPTYSLOT);
+                    }
+                    str.print(CgenSupport.NEWLINE);
+                }
+            }
+        }
+        
+
+
+
+        
+        
+        /*
+        //Main
+        str.print("Main".concat(CgenSupport.DISPTAB_SUFFIX).concat(CgenSupport.LABEL));
+        LinkedList <AbstractSymbol> mainDispTab = new LinkedList <AbstractSymbol> ();
+        //for
+        for( int i = 0 ; i < objectDispTab.size(); i++){
+            mainDispTab.add(objectDispTab.get(i));
+            str.print(CgenSupport.WORD);
+            str.print("Object".concat(CgenSupport.METHOD_SEP).concat(mainDispTab.get(i).toString()));
+            str.print(CgenSupport.NEWLINE);
+            
+        }
+        mainDispTab.add(TreeConstants.main_meth);
+
+        for( int i = objectDispTab.size(); i < objectDispTab.size(); i++){
+            str.print(CgenSupport.WORD);
+            str.print("Object".concat(CgenSupport.METHOD_SEP).concat(objectDispTab.get(i).toString()));
+            str.print(CgenSupport.NEWLINE);
+        }
+
+
+        for( int i = 0 ; i < mainDispTab.size(); i++){
+            str.print(CgenSupport.WORD);
+            str.print("Main".concat(CgenSupport.METHOD_SEP).concat(mainDispTab.get(i).toString()));
+            str.print(CgenSupport.NEWLINE);
+        }
+        //clases a partir de Main
+        // i = 6 porque ya se imprimieron los metodos de Object y el main ahora se imprimen las clases
+       
+        LinkedList <AbstractSymbol> classesDispTab = new LinkedList <AbstractSymbol> ();
+        for( int i = 0 ; i < classes.size(); i++){
+            str.print(classes.get(i).toString().concat(CgenSupport.DISPTAB_SUFFIX).concat(CgenSupport.LABEL));
+            for(int j = 0 ; j < objectDispTab.size(); j++){
+            classesDispTab.add(objectDispTab.get(j));            
+            str.print(CgenSupport.WORD);
+            str.print("Object".concat(CgenSupport.METHOD_SEP).concat(classesDispTab.get(j).toString()));
+            str.print(CgenSupport.NEWLINE);
+            }
+        }
+        */
 
         //                 Add your code to emit
         //                   - prototype objects
@@ -429,7 +666,65 @@ class CgenClassTable extends SymbolTable {
 
         //                 Add your code to emit
         //                   - object initializer
+        for( int i=0; i< classes.size(); i++){
+            class_ curClass = (class_) lookup(classes.get(i));
+            CgenSupport.emitInitRef(curClass.getName(), str);
+            str.print(CgenSupport.LABEL);
+            CgenSupport.emitPrologue(3, str);
+            if(!curClass.getName().equals(TreeConstants.Object_)){
+                CgenSupport.emitJal(curClass.getParent().toString().concat(CgenSupport.CLASSINIT_SUFFIX), str );
+            }
+            int valOff = 3;
+            for (Enumeration e = curClass.features.getElements(); e.hasMoreElements(); ) {
+                Feature currFeature = (Feature) e.nextElement();
+                if(currFeature instanceof attr){
+                    attr currAttr = (attr) currFeature;
+                    if(!(currAttr.init instanceof no_expr)){
+                        currAttr.init.code(str);
+                        CgenSupport.emitStore(CgenSupport.ACC, valOff, CgenSupport.SELF, str);
+                        valOff++;
+                    } 
+                
+                }
+            }
+            CgenSupport.emitEpilogue(3, true, str);
+
+        }
         //                   - the class methods
+        for(Enumeration e = cls.getElements(); e.hasMoreElements(); ) {
+            class_ currClass = (class_) e.nextElement();
+            for(Enumeration e2 = currClass.features.getElements(); e2.hasMoreElements(); ){
+
+                Feature currMethod = (Feature) e2.nextElement();
+                int valOff2 = 3;
+                if(currMethod instanceof method){
+                    method currMethod2 = (method) currMethod;
+                    enterScope();
+                    CgenSupport.emitMethodRef(currClass.getName(), currMethod2.name, str);
+                    str.print(CgenSupport.LABEL);
+                    CgenSupport.emitPrologue(valOff2, str);
+
+
+                    for (int i = currMethod2.formals.getLength(); i > 0; i--) {
+                        formal form = (formal) currMethod2.formals.getNth(i-1);
+                        addId(form.name, valOff2);
+                        valOff2++;
+                    }
+
+                    currMethod2.expr.code(str);
+                    CgenSupport.emitEpilogue(valOff2, false, str);
+                    exitScope();
+                    
+                } 
+
+
+
+            }
+        }   
+
+
+
+
         //                   - etc...
     }
 

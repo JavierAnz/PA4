@@ -1,9 +1,9 @@
-
-(*  Example cool program testing as many aspects of the code generator
-    as possible.
- *)
+class Animal {};
+class Gato {};
+class Perro {};
 
 class Main {
-  main():Int { 0 };
+	main():Object {
+		5 + 9
+	};
 };
-

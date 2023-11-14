@@ -242,6 +242,7 @@ class Cases extends ListNode {
     /** Returns class of this lists's elements */
     public Class getElementClass() {
         return elementClass;
+        
     }
 
     protected Cases(int lineNumber, Vector elements) {
@@ -360,6 +361,7 @@ class class_ extends Class_ {
       * @param a2 initial value for features
       * @param a3 initial value for filename
       */
+     
     public class_(int lineNumber, AbstractSymbol a1, AbstractSymbol a2, Features a3, AbstractSymbol a4) {
         super(lineNumber);
         name = a1;
@@ -751,6 +753,29 @@ class dispatch extends Expression {
       * @param s the output stream
       * */
     public void code(PrintStream s) {
+        if (this.actual.getLength() > 0) {
+            Expression currExpresion = (Expression) actual.getElements().nextElement();
+            currExpresion.code(s);
+            CgenSupport.emitPush(CgenSupport.ACC, s);
+        }
+
+        CgenSupport.emitLoadAddress(CgenSupport.ACC, "IO_protObj", s);
+        CgenSupport.emitJal(TreeConstants.Object_.toString().concat(CgenSupport.METHOD_SEP).concat("copy"), s);
+        CgenSupport.emitJal("IO_init", s);
+
+        CgenSupport.emitBne(CgenSupport.ACC, CgenSupport.ZERO, 0, s);
+        CgenSupport.emitLoadAddress(CgenSupport.ACC, "str_const0", s);
+        CgenSupport.emitLoadImm(CgenSupport.T1, 1, s);
+        CgenSupport.emitJal("_dispatch_abort", s);
+
+        CgenSupport.emitLabelDef(0, s);
+        int offsetManual = 3;
+        if (!this.name.toString().equals("out_string")) {
+            offsetManual = 4;
+        }
+        CgenSupport.emitLoad(CgenSupport.T1, CgenSupport.DISPTABLE_OFFSET, CgenSupport.ACC, s);
+        CgenSupport.emitLoad(CgenSupport.T1, offsetManual, CgenSupport.T1, s);
+        CgenSupport.emitJalr(CgenSupport.T1, s);
     }
 
 }
@@ -1059,6 +1084,17 @@ class plus extends Expression {
       * @param s the output stream
       * */
     public void code(PrintStream s) {
+
+        e1.code(s);
+        CgenSupport.emitPush(CgenSupport.ACC, s);
+        e2.code(s);
+        CgenSupport.emitJal(TreeConstants.Object_.toString().concat(CgenSupport.METHOD_SEP).concat("copy"), s);
+        CgenSupport.emitLoad(CgenSupport.T2, CgenSupport.DEFAULT_OBJFIELDS, CgenSupport.ACC, s);
+        CgenSupport.emitLoad(CgenSupport.T1, 1, CgenSupport.SP, s);
+        CgenSupport.emitAddi(CgenSupport.SP, CgenSupport.SP, 4, s);
+        CgenSupport.emitLoad(CgenSupport.T1, CgenSupport.DEFAULT_OBJFIELDS, CgenSupport.T1, s);
+        CgenSupport.emitAdd(CgenSupport.T1, CgenSupport.T1, CgenSupport.T2, s);
+        CgenSupport.emitStore(CgenSupport.T1, CgenSupport.DEFAULT_OBJFIELDS, CgenSupport.ACC, s);
     }
 
 }
@@ -1618,6 +1654,9 @@ class new_ extends Expression {
       * @param s the output stream
       * */
     public void code(PrintStream s) {
+        CgenSupport.emitLoadAddress(CgenSupport.ACC, type_name.toString() + CgenSupport.PROTOBJ_SUFFIX, s);
+        CgenSupport.emitJal(TreeConstants.Object_.toString().concat(CgenSupport.METHOD_SEP).concat("copy"), s);
+        CgenSupport.emitJal(type_name.toString().concat(CgenSupport.CLASSINIT_SUFFIX), s);
     }
 
 }
